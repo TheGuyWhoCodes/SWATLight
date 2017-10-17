@@ -11,12 +11,27 @@ public class SWATLED {
 		light = new CANLight(CANPort);
 		light.reset();
 	}
-	public void reset(){
+	public void colorReset(){
 		light.writeRegister(0, 1.5, 0, 255, 0);
 		light.writeRegister(1, 1.5, 0, 150, 0);
 		light.writeRegister(2, 1.5, 0, 100, 0);
-		
-		light.fade(0, 1);
+		light.fade(0, 2);
+	}
+	public void showColor(int r, int g, int b){
+		light.free();
+		light.writeRegister(0, 1, r, g, b);
+		light.showRegister(0);
+	}
+	public void flashColor(int oR, int oG, int oB, int lR, 
+			int lG, int lB){
+		// We cycle through two colors that the method provides
+		light.free();
+		light.writeRegister(0, .2, oR, oG, oB);
+		light.writeRegister(1, .2, lR, lG, lB);
+		light.cycle(0, 1);
+	}
+	public void defaultState() {
+		teamColor();
 	}
 	public void teamColor(){
 		if (ds.getAlliance() == DriverStation.Alliance.Red) {
@@ -28,12 +43,19 @@ public class SWATLED {
         }
 	}
 	public void rainbowFade(){
-		
+		light.free();
+		light.writeRegister(0, .2, 255,0,0);
+		light.writeRegister(1, .2, 255,165,0);
+		light.writeRegister(2, .2, 255,255,0);
+		light.writeRegister(3, .2, 0,50,0);
+		light.writeRegister(4, .2, 0,0,255);
+		light.writeRegister(5, .2, 0,125,125);
+		light.fade(0, 5);
 	}
 	public void firstFade(){
 		light.writeRegister(1, 1.0, 255,   0,   0); // red
 		light.writeRegister(2, 1.0, 255, 255, 255); // white
 		light.writeRegister(3, 1.0,   0,   0, 255); // blue
-		light.cycle(1, 3);
+		light.fade(1, 3);
 	}
 }
